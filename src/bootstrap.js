@@ -48,7 +48,26 @@ const startCore = () => {
       if (oaConfig.js) bw.webContents.executeJavaScript(oaConfig.js);
     });
   });
+  
+// === FluffCord injection ===
+try {
+  const fs = require('fs');
+  const { app } = require('electron');
+  const path = require('path');
 
+  const appData = app.getPath('appData');
+  const fluffcord = path.join(appData, 'FluffCord', 'desktop.asar');
+
+  if (fs.existsSync(fluffcord)) {
+    require(fluffcord);
+    log('FluffCord', 'Loaded desktop.asar');
+  } else {
+    log('FluffCord', 'desktop.asar not found at', fluffcord);
+  }
+} catch (e) {
+  log('FluffCord', 'Failed to load desktop.asar', e);
+}
+// ==========================
   desktopCore = require('discord_desktop_core');
 
   const desktopTTI = new Proxy({}, {
